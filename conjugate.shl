@@ -1,0 +1,92 @@
+#!/bin/sh
+#
+# CONJUGATE.SHL --Shell Library code for doing some word manipulations.
+#
+# Contents:
+# snake_case() --Convert a CamelCase verb to snake_case.
+# kebab_case() --Convert a CamelCase verb to kebab-case.
+# camel_case() --Convert a snake/kebab-case name to CamelCase.
+# plural()     --Convert a list of words into (English) plural form.
+#
+# Remarks:
+# Technically, conjugation is something that applies to verbs, but
+# we're dealing with nouns here: the "conjugation" is between the
+# variant "standard" spelling/typography of developer nouns:
+#
+# * CamelCase
+# * snake_case
+# * kebab-case.
+#
+
+#
+# snake_case() --Convert a CamelCase verb to snake_case.
+#
+snake_case()
+{
+    echo "$*" |
+	sed -e 's/\([a-z]\)\([A-Z]\)/\1_\2/g' \
+	    -e 's/  *//g;s/-/_/g;s/__/_/g;s/_$//' |
+	tr '[:upper:]' '[:lower:]'
+}
+
+#
+# kebab_case() --Convert a CamelCase verb to kebab-case.
+#
+kebab_case()
+{
+    echo "$*" |
+	sed -e 's/\([a-z]\)\([A-Z]\)/\1-\2/g' \
+	    -e 's/  *//g;s/_/-/g;s/--/-/g;s/-$//' |
+	tr '[:upper:]' '[:lower:]'
+}
+
+#
+# camel_case() --Convert a snake/kebab-case name to CamelCase.
+#
+camel_case()
+{
+    snake_case "$@" |
+	sed -e 's/^a/A/;s/_a/A/g' -e 's/^b/B/;s/_b/B/g' \
+	    -e 's/^c/C/;s/_c/C/g' -e 's/^d/D/;s/_d/D/g' \
+	    -e 's/^e/E/;s/_e/E/g' -e 's/^f/F/;s/_f/F/g' \
+	    -e 's/^g/G/;s/_g/G/g' -e 's/^h/H/;s/_h/H/g' \
+	    -e 's/^i/I/;s/_i/I/g' -e 's/^j/J/;s/_j/J/g' \
+	    -e 's/^k/K/;s/_k/K/g' -e 's/^l/L/;s/_l/L/g' \
+	    -e 's/^m/M/;s/_m/M/g' -e 's/^n/N/;s/_n/N/g' \
+	    -e 's/^o/O/;s/_o/O/g' -e 's/^p/P/;s/_p/P/g' \
+	    -e 's/^q/Q/;s/_q/Q/g' -e 's/^r/R/;s/_r/R/g' \
+	    -e 's/^s/S/;s/_s/S/g' -e 's/^t/T/;s/_t/T/g' \
+	    -e 's/^u/U/;s/_u/U/g' -e 's/^v/V/;s/_v/V/g' \
+	    -e 's/^w/W/;s/_w/W/g' -e 's/^x/X/;s/_x/X/g' \
+	    -e 's/^y/Y/;s/_y/Y/g' -e 's/^z/Z/;s/_z/Z/g'
+}
+
+#
+# plural() --Convert a list of words into (English) plural form.
+#
+# Remarks:
+# This uses glob matching for most of the transformations, with an
+# exceptions list in a file for the irregular pluralisations.
+#
+plural()
+{				# REVISIT: configurable plural exceptions file.
+    local plural_file=/usr/local/share/text/plural.txt
+
+    for word; do
+	if [ -e "$plural_file" ]; then
+	    if ! sed -n -e 's/#.*//' -e "/^$word /{s/^$word *//p;q1}"  "$plural_file"; then
+		continue
+	    fi
+	fi
+	case "$word" in
+	    *[^aeiou]y)	echo "${word%y}ies";;	# consonant+"y" endings
+	    *[^aeiou]o)	echo "${word}es";;	# consonant+"o" endings
+	    *[aeiou][cs][sh])  echo "${word}es";; # `sibilant endings
+	    *[aeiou]tch) echo "${word}es";;	# more sibilant endings
+	    *quy)	echo "${word%y}ies";;	# Latin: soliloquy etc.
+	    *ex)	echo "${word%ex}ices";;	# Latin (e.g. index, codex)
+	    *x)		echo "${word}es";;	# more sibilant endings
+	    *)		echo "${word}s";;
+	esac
+    done
+}

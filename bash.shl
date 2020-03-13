@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# BASHISMS.SHL --Shell library functions to mimic some bash features.
+#
+
+#
+# random() --echo a random integer.
+#
+random()
+{
+    hexdump -n 2 -e '/2 "%u"' /dev/urandom
+}
+
+#
+# source() --Include a file, with arguments.
+#
+source()
+{
+    . "$@"
+}

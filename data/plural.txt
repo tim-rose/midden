@@ -1,0 +1,60 @@
+#
+# plural.txt --explicit plurals for exceptions.
+#
+# Remarks:
+# Adapted from https://en.wikipedia.org/wiki/English_plurals
+#
+calf calves
+leaf leaves
+knife knives
+life lives
+wife wives
+elf elves
+staff staves
+hoof hooves
+roof rooves
+loaf loaves
+ox oxen
+# self-plural animals
+bison bison
+buffalo buffalo
+deer deer
+fish fish
+pike pike
+salmon salmon
+sheep sheep
+squid squid
+swine swine
+trout trout
+#
+child children
+brother brethren
+# inner vowel changes
+foot feet
+goose geese
+louse lice
+dormouse dormice
+man men
+mouse mice
+tooth teeth
+woman women
+# damn crazy
+person people
+die dice
+penny pence
+# Latin variations
+axis axes
+matrix matrices
+#
+crisis crises
+series series
+species species
+# Latin "um" -> "a"
+medium media
+addendum addenda
+corrigendum corrigenda
+referendum referenda
+spectrum spectra
+datum data
+millennium millennia
+ovum ova

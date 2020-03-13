@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# UNICODE.SHL --Unicode translation routines.
+#
+# Remarks:
+# Shamelessly stolen from the Internet.
+#
+# See Also:
+# http://stackoverflow.com/questions/602912/how-do-you-echo-a-4-digit-unicode-character-in-bash
+#
+fast_char() {
+    local __octal
+    local __char
+    printf -v __octal '%03o' "$1"
+    printf -v __char \\$__octal
+    REPLY="$__char"
+}
+
+unicode () {
+    local c=$1  # ordinal of char
+    local l=0   # byte ctr
+    local o=63  # ceiling
+    local p=128 # accum. bits
+    local s=''  # output string
+    local REPLY=
+
+    (( c < 0x80 )) && { fast_char "$c"; printf "%s" "$REPLY"; return; }
+
+    while (( c > o )); do
+        fast_char $(( t = 0x80 | c & 0x3f ))
+        s="$REPLY$s"
+        (( c >>= 6, l++, p += o+1, o>>=1 ))
+    done
+
+    fast_char $(( t = p | c ))
+    printf "%s" "$REPLY$s"
+}
+
+## test harness
+# for (( i=0x2500; i<0x2600; i++ )); do
+#     unicode $i
+# done

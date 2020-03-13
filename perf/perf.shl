@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# PERF.SHL --performance monitoring stuff...
+#
+# Contents:
+# print_result()  --Print the performance result.
+# terminate()     --Force termination of the performance test.
+# perf()          --Run a command repeatedly until terminated.
+# perf_subshell() --Run a command repeatedly in a subshell until terminated.
+#
+# Remarks:
+# The perf library provides a function to repeatedly run a command.
+# The command is run for ~10s, and the number of iterations are
+# counted and reported.
+#
+require tap
+n=0
+trap print_result 1 2 3 14
+
+#
+# print_result() --Print the performance result.
+#
+print_result()
+{
+    local end_t='' duration=''
+    end_t=$(date '+%s.%N')
+    duration=$(
+	echo "scale=3; 1000*($end_t - $start_t)/$n" | bc)
+    message=$(printf '%s %d iterations, %sms per iteration' "$0" $n "$duration")
+    ok 0 "$message"
+    exit
+} >&3
+
+#
+# terminate() --Force termination of the performance test.
+#
+terminate()
+{
+    local duration=$1 proc_id=$2
+
+    sleep "$duration"
+    kill -s 14 "$proc_id"
+}
+
+#
+# perf() --Run a command repeatedly until terminated.
+#
+# Parameters:
+# duration --duration of performance run
+# ...	--command to  run
+#
+perf()
+{
+    local duration=$1; shift
+
+    start_t=$(date '+%s.%N')
+    terminate "$duration" "$$" &
+    exec 3>&1 		# snarf stdout for print_result()
+    while :; do
+	"$@";
+        n=$(( n+1 ))
+    done >/dev/null 2>&1
+}
+
+#
+# perf_subshell() --Run a command repeatedly in a subshell until terminated.
+#
+perf_subshell()
+{
+    while :; do
+	( perf "$@" );
+	n=$(( n+1 ))
+    done
+}

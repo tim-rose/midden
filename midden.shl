@@ -1,0 +1,253 @@
+#!/bin/sh
+#
+# MIDDEN.SHL --A heap of shell fragments.
+#
+# Contents:
+# abs_path()      --Return the absolute/full path of a given path.
+# func()          --Create a named function.
+# quietly()       --Run a command, but choke stdout+stderr.
+# need()          --Test if some commands are available to the current shell.
+# choose()        --Interactively filter a set of values.
+# prompt()        --Prompt for a value, with a default.
+# prompt_ok()     --Prompt for a value and return.
+# newer()         --Test if a file is newer than some other file.
+# is_user()       --Test if the current process is owned by a specified user.
+# is_group()      --Test if the current process is a member of a specified group.
+# argv_or_stdin() --output arguments (if specified) or lines from stdin.
+# shell_id()      --Return a string identifying the current shell.
+# atexit()        --Add a command to be run when the process exits.
+#
+# Remarks:
+# This library contains miscellaneous routines that I don't have
+# another/better place for.
+#
+
+require log
+
+#
+# abs_path() --Return the absolute/full path of a given path.
+#
+abs_path()
+{
+    case "$1" in
+	/*)	echo "$1";; # already absolute!?
+        *)	echo "$PWD/$1";; # prepend current directory
+    esac
+}
+
+#
+# func() --Create a named function.
+#
+func()
+{
+    local name=$1; shift
+    eval "$name() { $*; }"
+}
+
+#
+# quietly() --Run a command, but choke stdout+stderr.
+#
+quietly()
+{
+    "$@"
+} >/dev/null 2>&1
+
+#
+# need() --Test if some commands are available to the current shell.
+#
+# Parameters:
+# $*	--the names of the commands that are needed.
+#
+# Returns:
+# Success: all commands are available; Failure: some commands not available.
+#
+need()
+{
+    require log
+    local status=0 script="${0##*/}" command=
+
+    for command; do
+	if ! quietly type "$command"; then
+	    status=$?
+	    warning '%s: the command "%s" is needed' "$script" "$command"
+	fi
+    done
+    return "$status"
+}
+
+#
+# choose() --Interactively filter a set of values.
+#
+# Parameters:
+# $@	--this list of words to choose from
+#
+# Returns:
+# Success: true (and prints the chosen words); Failure: false.
+#
+# Remarks:
+# This is vaguely similar to the bash "select" command.
+#
+choose()
+{
+    local list='' select_all='' choice='' read_opts=''
+
+    if [ "$(shell_id)" = 'bash' ]; then
+	read_opts=-n1		# bash supports single-char read
+    fi
+
+    for item in "$@"; do
+	while true; do
+	    if [ "$select_all" ]; then
+		choice=y
+	    else
+		read "$read_opts" -p "$item? [ynaq]: " choice
+		echo			# get to a newline
+	    fi
+	    if match "$choice" "[yYnNaAqQ]"; then
+		break;
+	    else
+		echo "Please type y(=yes) n(=no) a(=all remaining) q(=quit, none selected)" >&2
+	    fi
+	done
+	case "$choice" in
+	[yY])	list="${list:+ }$item";;
+	[nN])	;;
+	[aA])	list="${list:+ }$item"; select_all=1;;
+	[qQ])	false; return;;	# failure
+	esac
+    done
+    if [ "$list" ]; then
+	echo "$list"
+    fi
+    true
+}
+
+#
+# prompt() --Prompt for a value, with a default.
+#
+# Parameters:
+# $1	--the prompt
+# $2	--the default value
+#
+# Returns:
+# Success: true, and echoes the new value; Failure: false.
+#
+prompt()
+{
+    local prompt=$1 default=$2
+    local read_opts= prompt_text=
+
+    if [ "$(shell_id)" = 'bash' ]; then
+	read_opts=-e		# bash supports readline
+    fi
+
+    prompt="$prompt${default:+[$default]}"
+
+    if read "$read_opts" -p "$prompt: " value; then
+	echo "${value:-$default}"
+    fi
+}
+
+#
+# prompt_ok() --Prompt for a value and return.
+#
+prompt_ok()
+{
+    local response=
+
+    response=$(prompt "$@") || return 2
+
+    case "$response" in
+	[yY])	true;;
+	[yY][eE][sS])	true;;
+	*)	false;;
+    esac
+}
+
+#
+# newer() --Test if a file is newer than some other file.
+#
+newer()
+{
+    test "$(stat -f '%Y' "$1")" -gt "$(stat -f '%Y' "$2")"
+}
+
+#
+# is_user() --Test if the current process is owned by a specified user.
+#
+is_user()
+{
+    test "$(id -nu "$1" 2>/dev/null)" = "$1"
+}
+
+#
+# is_group() --Test if the current process is a member of a specified group.
+#
+is_group()
+{
+    for group in $(id -Gn); do
+	if [ "$group" = "$1" ]; then
+	    return			# success: found in group
+	fi
+    done
+    false				# failure: not found
+}
+
+#
+# argv_or_stdin() --output arguments (if specified) or lines from stdin.
+#
+# Remarks:
+# This is an implementation of perl's behaviour wrt command arg.s
+# and stdio.
+#
+argv_or_stdin()
+{
+    local arg
+
+    if [ $# -gt 0 ]; then
+	for arg; do echo "$arg"; done
+    else
+	while read arg; do echo "$arg"; done
+    fi
+}
+
+#
+# shell_id() --Return a string identifying the current shell.
+#
+shell_id()
+{
+    ps -o comm $$ 2>/dev/null | sed -e '1d' -e 's/^-//' -e 's/ .*//'
+}
+
+#
+# atexit() --Add a command to be run when the process exits.
+#
+# Remarks:
+# This routine mimics the behaviour of atexit(3). Note that although
+# the behaviour is defined by POSIX, dash doesn't support the use of
+# save_trap=$(trap) to save the current signal actions. Hence the
+# rather ugly machinations with the temporary file.
+#
+if ! type atexit >/dev/null 2>&1; then
+    atexit()
+    {
+        local exit_trap=
+        local tmpfile=$(mktemp) && {
+            rm -f -- "$tmpfile"
+            trap
+            exit_trap=$(sed -nre "s/^trap -- '(.*)' EXIT$/\1/p")
+        } > "$tmpfile" < "$tmpfile"
+        trap "$*${exit_trap:+; $exit_trap}" 0
+    }
+fi
+#
+# When dash grows up, the following should work...
+#
+# atexit()
+# {
+#     local exit_trap=
+#
+#     exit_trap=$(trap -- | sed -ne "s/^trap -- [']//;s/['] EXIT\$//p")
+#
+#     trap "$*${exit_trap:+; $exit_trap}" 0
+# }

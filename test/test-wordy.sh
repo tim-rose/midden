@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# CONJUGATE.SH --Unit tests for the conjugate module.
+# TEST-WORDY.SH --Unit tests for the word manipulation module.
 #
 PATH=..:$PATH
 . midden
 require tap
 
-require conjugate
+require wordy
 
 plan 25
 

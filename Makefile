@@ -6,9 +6,9 @@ BUILD = 0
 package-type = rpm
 language = sh nroff
 
-SHL_SRC = bash.shl cgi.shl config.shl conjugate.shl daemon.shl \
-    debian.shl getopt.shl log.shl midden.shl number.shl \
-    string.shl tty.shl unicode.shl unit.shl
+SHL_SRC = bash.shl cgi.shl config.shl daemon.shl debian.shl \
+    getopt.shl log.shl midden.shl number.shl string.shl tty.shl \
+    unicode.shl unit.shl wordy.shl
 SH_SRC = midden.sh
 MAN1_SRC = midden.1
 MK_SRC = _VERSION.mk

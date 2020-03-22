@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# CONJUGATE.SHL --Shell Library code for doing some word manipulations.
+# WORDY.SHL --Shell Library code for doing some word manipulations.
 #
 # Contents:
 # snake_case() --Convert a CamelCase verb to snake_case.
@@ -81,8 +81,9 @@ plural()
 	case "$word" in
 	    *[^aeiou]y)	echo "${word%y}ies";;	# consonant+"y" endings
 	    *[^aeiou]o)	echo "${word}es";;	# consonant+"o" endings
-	    *[aeiou][cs][sh])  echo "${word}es";; # `sibilant endings
-	    *[aeiou]tch) echo "${word}es";;	# more sibilant endings
+	    *[aeiou][cs][sh])  echo "${word}es";; # sibilant endings
+	    *[aeiou]s)  echo "${word}es";;	# more sibilant endings
+	    *[aeiou]tch) echo "${word}es";;	# yet more sibilant endings
 	    *quy)	echo "${word%y}ies";;	# Latin: soliloquy etc.
 	    *ex)	echo "${word%ex}ices";;	# Latin (e.g. index, codex)
 	    *x)		echo "${word}es";;	# more sibilant endings

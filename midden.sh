@@ -67,7 +67,7 @@ require()
 	    fi
 	else
 	    status=$?
-	    printf 'error: cannot load library file "%s"\n' "$library_path" >&2
+	    printf 'error: cannot load library file "%s"\n' "$library" >&2
 	fi
 	on_load "$@"
     fi

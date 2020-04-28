@@ -24,15 +24,15 @@ ok_eq "$(snake_case alpha_beta_gamma)" alpha_beta_gamma 'snake case: idempotent'
 ok_eq "$(kebab_case Alpha)" alpha 'kebab case: one element'
 ok_eq "$(kebab_case AlphaBetaGamma)" alpha-beta-gamma 'kebab case: three elements'
 ok_eq "$(kebab_case AlphaBETAGamma)" alpha-betagamma 'kebab case: only sensitive to a->A'
-ok_eq "$(snake_case alpha-beta-gamma)" alpha_beta_gamma 'snake case: idempotent'
+ok_eq "$(kebab_case alpha-beta-gamma)" alpha-beta-gamma 'kebab case: idempotent'
 
 #
-# TODO: camel_case tests
+# camel_case tests
 #
 ok_eq "$(camel_case alpha)" Alpha 'camel case: one element'
 ok_eq "$(camel_case alpha_beta_gamma)" AlphaBetaGamma 'camel case: three elements'
 ok_eq "$(camel_case Alpha-BETA-Gamma)" AlphaBetaGamma 'camel case: only sensitive to a->A'
-ok_eq "$(camel_case AlphaBetaGamma)" AlphaBetaGamma 'snake case: idempotent'
+ok_eq "$(camel_case AlphaBetaGamma)" AlphaBetaGamma 'camel case: idempotent'
 
 #
 # plural tests

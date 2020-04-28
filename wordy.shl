@@ -3,8 +3,8 @@
 # WORDY.SHL --Shell Library code for doing some word manipulations.
 #
 # Contents:
-# snake_case() --Convert a CamelCase verb to snake_case.
-# kebab_case() --Convert a CamelCase verb to kebab-case.
+# snake_case() --Convert a CamelCase name to snake_case.
+# kebab_case() --Convert a CamelCase name to kebab-case.
 # camel_case() --Convert a snake/kebab-case name to CamelCase.
 # plural()     --Convert a list of words into (English) plural form.
 #
@@ -19,7 +19,7 @@
 #
 
 #
-# snake_case() --Convert a CamelCase verb to snake_case.
+# snake_case() --Convert a CamelCase name to snake_case.
 #
 snake_case()
 {
@@ -30,7 +30,7 @@ snake_case()
 }
 
 #
-# kebab_case() --Convert a CamelCase verb to kebab-case.
+# kebab_case() --Convert a CamelCase name to kebab-case.
 #
 kebab_case()
 {

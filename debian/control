@@ -1,0 +1,18 @@
+Package: midden
+Section: misc
+Priority: extra
+Maintainer: Tim Rose <tim.rose@acm.org>
+Architecture: all
+Version: 0.0.0
+Description: Midden, a heap of shell fragments.
+ Midden is a framework for modern shell programming.
+ It comprises a source-able bootstrap that defines
+ some shell functions, chiefly "require()", which allows
+ for the controlled inclusion of shell library code.
+ .
+ The midden library contains convenience routines for:
+ .
+  * command-line options
+  * configuration files
+  * logging
+  * and much more!

@@ -1,7 +1,7 @@
 subdir = text
 DATA_SRC = plural.txt
 
-include devkit.mk
+include makeshift.mk
 
 install: $(DATA_SRC:%=$(datadir)/%)
 uninstall: uninstall-data

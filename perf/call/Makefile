@@ -5,7 +5,7 @@ language = sh
 SH_SRC = command-call.sh empty-call.sh function-call.sh \
     inline-call.sh
 
-include devkit.mk
+include makeshift.mk
 
 test: test-loop
 test-loop: $(SH_TRG)

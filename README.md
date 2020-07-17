@@ -24,7 +24,7 @@ don't support these features.
 
 ## Installation
 
-If you have [**devikt**](https://github.com/tim-rose/devkit) installed:
+If you have [**devikt**](https://github.com/tim-rose/makeshift) installed:
 
 ```sh
 $ make install

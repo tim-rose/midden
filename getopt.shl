@@ -51,7 +51,7 @@ require log
 #
 getopt_short_spec()
 {
-    echo "$1" |
+    printf '%s\n' "$1" |
 	sed -e 's/=[^;]*/:/g' -e 's/[.][^:;]*//g' -e 's/;//g'
 }
 
@@ -63,7 +63,7 @@ getopt_short_spec()
 #
 getopt_long_spec()
 {
-    echo "$1" |
+    printf '%s\n' "$1" |
 	sed -e 's/=[^;]*/:/g' -e 's/_/-/g' -e 's/^.[.]//g' -e 's/;.[.]/,/g'
 }
 
@@ -85,7 +85,7 @@ getopt_defaults()
     local IFS=';'
 
     for spec in $1; do
-	echo "$spec"
+	printf '%s\n' "$spec"
     done  | sed -ne 's/^.[.]//' -e 's/=/="/'  -e '/=/s/$/";/p'
 )
 
@@ -111,9 +111,9 @@ getopt_short_var()
 
 	if [ "$spec_key" = "$key" ]; then
 	    if match "$spec" "*=*"; then
-		echo "$spec_var="
+		printf '%s\n' "$spec_var="
 	    else
-		echo "$spec_var"
+		printf '%s\n' "$spec_var"
 	    fi
 	fi
     done
@@ -138,9 +138,9 @@ getopt_long_var()
 
 	if [ "$spec_var" = "$key" ]; then
 	    if match "$spec" "*=*"; then
-		echo "$spec_var="
+		printf '%s\n' "$spec_var="
 	    else
-		echo "$spec_var"
+		printf '%s\n' "$spec_var"
 	    fi
 	fi
     done
@@ -171,7 +171,7 @@ getopt_usage()
 
 	var=${spec#?.}
 	var=${var%%=*}
-	var="$(echo $var | sed 's/_/-/g')"
+	var="$(printf '%s\n' $var | sed 's/_/-/g')"
 
 	value="${spec#*=}"
 	debug 'opt: %s, var: %s, value: %s' "$opt" "$var" "$value"
@@ -216,18 +216,18 @@ getopt_args()
 
     while getopts $_opts_short opt; do
 	if [ "$opt" = '?' ]; then
-	    echo 'exit 2;'	# trick eval-er to exit!
+	    printf '%s\n' 'exit 2;'	# trick eval-er to exit!
 	    return 1		# failure
 	else
 	    var=$(getopt_short_var "$_opts" $opt)
 	    if match "$var" '*='; then
-		echo "$var\"$OPTARG\";"
+		printf '%s\n' "$var\"$OPTARG\";"
 	    else
-		echo "$var=1;"
+		printf '%s\n' "$var=1;"
 	    fi
 	fi
     done
-    echo "OPTIND=$OPTIND"	# tell caller how many options were processed
+    printf '%s\n' "OPTIND=$OPTIND"	# tell caller how many options were processed
 }
 
 #
@@ -263,13 +263,13 @@ getopt_long_args()
     args=$(getopt --options $short_spec --longoptions $long_spec -- "$@")
 
     if [ $? != 0 ]; then
-	echo 'false;'
+	printf '%s\n' 'false;'
 	return 1
     fi
 
     eval "set -- $args"	# re-jig our arguments  getopt
     while true; do
-	local _opt_v="$(echo "$1" | sed -e 's/^-*//' -e 's/-/_/g')"
+	local _opt_v="$(printf '%s\n' "$1" | sed -e 's/^-*//' -e 's/-/_/g')"
 	local var=
 	case "$1" in
 	    --)		break;;	# explicit end of options
@@ -278,12 +278,12 @@ getopt_long_args()
 	    *)		break;;	# implicit end of options
 	esac
 	if match "$var" "*="; then
-	    echo "$var'$2';"
+	    printf '%s\n' "$var'$2';"
 	    shift 2;
 	elif [ "$var" ]; then
-	    echo "$var=1;"
+	    printf '%s\n' "$var=1;"
 	    shift 1;
 	fi
     done
-    echo "set" "$@" ";"	# force caller to reset their arguments
+    printf '%s\n' "set" "$@" ";"	# force caller to reset their arguments
 }

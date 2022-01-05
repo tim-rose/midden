@@ -143,7 +143,7 @@ prompt()
 
     prompt="$prompt${default:+[$default]}"
 
-    if read "$read_opts" -p "$prompt: " value; then
+    if read $read_opts -p "$prompt: " value; then
 	echo "${value:-$default}"
     fi
 }

@@ -6,6 +6,7 @@
 # snake_case() --Convert a CamelCase name to snake_case.
 # kebab_case() --Convert a CamelCase name to kebab-case.
 # camel_case() --Convert a snake/kebab-case name to CamelCase.
+# pascal_case() --Convert a snake/kebab-case name to pascalCase.
 # plural()     --Convert a list of words into (English) plural form.
 #
 # Remarks:
@@ -59,6 +60,27 @@ camel_case()
 	    -e 's/^u/U/;s/_u/U/g' -e 's/^v/V/;s/_v/V/g' \
 	    -e 's/^w/W/;s/_w/W/g' -e 's/^x/X/;s/_x/X/g' \
 	    -e 's/^y/Y/;s/_y/Y/g' -e 's/^z/Z/;s/_z/Z/g'
+}
+
+#
+# pascal_case() --Convert a snake/kebab-case name to pascalCase.
+#
+pascal_case()
+{
+    snake_case "$@" |
+	sed -e 's/_a/A/g' -e 's/_b/B/g' \
+	    -e 's/_c/C/g' -e 's/_d/D/g' \
+	    -e 's/_e/E/g' -e 's/_f/F/g' \
+	    -e 's/_g/G/g' -e 's/_h/H/g' \
+	    -e 's/_i/I/g' -e 's/_j/J/g' \
+	    -e 's/_k/K/g' -e 's/_l/L/g' \
+	    -e 's/_m/M/g' -e 's/_n/N/g' \
+	    -e 's/_o/O/g' -e 's/_p/P/g' \
+	    -e 's/_q/Q/g' -e 's/_r/R/g' \
+	    -e 's/_s/S/g' -e 's/_t/T/g' \
+	    -e 's/_u/U/g' -e 's/_v/V/g' \
+	    -e 's/_w/W/g' -e 's/_x/X/g' \
+	    -e 's/_y/Y/g' -e 's/_z/Z/g'
 }
 
 #

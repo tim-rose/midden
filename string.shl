@@ -25,9 +25,9 @@
 str_split()
 {
     local word=
-    local IFS=$1
+    local IFS="$1"; shift
 
-    for word in $2; do
+    for word in $*; do
 	echo "$word"
     done
 }
@@ -47,20 +47,14 @@ str_split()
 #
 str_join()
 {
-    local delimiter=$1; shift;
-    local arg=
-
-    if [ $# -eq 0 ]; then
-	return
-    fi
-    printf '%s' "$1"; shift;
-    for arg; do
-	printf '%s%s' "$delimiter" "$arg"
-    done
-    printf "\n"
+    local IFS="$1"; shift;
+    echo "$*"
 }
 
 #
-# rot13() --translate text using Caesar's cipher, with an offset of 13.
+# rot13() --Translate text using Caesar's cipher, with an offset of 13.
 #
-rot13() { tr A-Za-z N-ZA-Mn-za-m; }
+rot13()
+{
+    tr A-Za-z N-ZA-Mn-za-m
+}

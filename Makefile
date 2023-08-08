@@ -11,9 +11,8 @@ SHL_SRC = bash.shl cgi.shl config.shl daemon.shl debian.shl \
     unicode.shl unit.shl wordy.shl
 SH_SRC = midden.sh
 MAN1_SRC = midden.1
-MK_SRC = _VERSION.mk
 
-include makeshift.mk package.mk version.mk
+include makeshift.mk package.mk
 
 install:	install-all install-man
 uninstall:	uninstall-all uninstall-man

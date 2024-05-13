@@ -10,9 +10,8 @@
 # Remarks:
 # This bootstrap code just defines enough stuff to load the rest via require().
 #
+midden_version="VERSION"
 unset CDPATH			# not needed, and causes junk on stdout
-version=local
-build=latest
 
 #
 # resolve_path() --Find a file in a path-specific way.

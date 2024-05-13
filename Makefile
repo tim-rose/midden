@@ -1,8 +1,6 @@
 #
 # Makefile --Build rules for midden, the heap of shell fragments.
 #
-VERSION = 0.0
-BUILD = 0
 package-type = rpm deb
 language = sh nroff
 

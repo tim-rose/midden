@@ -8,7 +8,7 @@ require tap
 
 require wordy
 
-plan 25
+plan 29
 
 #
 # snake case
@@ -27,12 +27,20 @@ ok_eq "$(kebab_case AlphaBETAGamma)" alpha-betagamma 'kebab case: only sensitive
 ok_eq "$(kebab_case alpha-beta-gamma)" alpha-beta-gamma 'kebab case: idempotent'
 
 #
-# camel_case tests
+# pascal case
 #
-ok_eq "$(camel_case alpha)" Alpha 'camel case: one element'
-ok_eq "$(camel_case alpha_beta_gamma)" AlphaBetaGamma 'camel case: three elements'
-ok_eq "$(camel_case Alpha-BETA-Gamma)" AlphaBetaGamma 'camel case: only sensitive to a->A'
-ok_eq "$(camel_case AlphaBetaGamma)" AlphaBetaGamma 'camel case: idempotent'
+ok_eq "$(pascal_case alpha)" Alpha 'pascal case: one element'
+ok_eq "$(pascal_case alpha_beta_gamma)" AlphaBetaGamma 'pascal case: three elements'
+ok_eq "$(pascal_case Alpha-BETA-Gamma)" AlphaBetaGamma 'pascal case: only sensitive to a->A'
+ok_eq "$(pascal_case AlphaBetaGamma)" AlphaBetaGamma 'pascal case: idempotent'
+
+#
+# camel case
+#
+ok_eq "$(camel_case alpha)" alpha 'camel case: one element'
+ok_eq "$(camel_case alpha_beta_gamma)" alphaBetaGamma 'camel case: three elements'
+ok_eq "$(camel_case Alpha-BETA-Gamma)" alphaBetaGamma 'camel case: only sensitive to a->A'
+ok_eq "$(camel_case AlphaBetaGamma)" alphaBetaGamma 'camel case: idempotent'
 
 #
 # plural tests

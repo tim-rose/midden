@@ -42,9 +42,9 @@ kebab_case()
 }
 
 #
-# camel_case() --Convert a snake/kebab-case name to CamelCase.
+# pascal_case() --Convert a snake/kebab-case name to PascalCase.
 #
-camel_case()
+pascal_case()
 {
     snake_case "$@" |
 	sed -e 's/^a/A/;s/_a/A/g' -e 's/^b/B/;s/_b/B/g' \
@@ -63,9 +63,9 @@ camel_case()
 }
 
 #
-# pascal_case() --Convert a snake/kebab-case name to pascalCase.
+# camel_case() --Convert a snake/kebab-case name to CamelCase.
 #
-pascal_case()
+camel_case()
 {
     snake_case "$@" |
 	sed -e 's/_a/A/g' -e 's/_b/B/g' \
